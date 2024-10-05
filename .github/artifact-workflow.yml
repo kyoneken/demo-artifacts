@@ -1,0 +1,60 @@
+name: Artifact Demo Workflow
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Create artifact
+      run: |
+        mkdir artifact
+        cp -r sample/* artifact/
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: html-pages
+        path: artifact
+
+  comment-pr:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+    - name: Download artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: html-pages
+
+    - name: Get artifact URLs
+      id: artifact_urls
+      run: |
+        ARTIFACT_URL=$(echo ${{ github.event.pull_request.html_url }} | sed 's/pull\//pull\/artifacts\//')
+        echo "::set-output name=url::$ARTIFACT_URL"
+
+    - name: Comment PR
+      uses: actions/github-script@v4
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          github.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: `Artifacts have been generated for this PR. You can view them here:
+            
+            - [index.html](${{ steps.artifact_urls.outputs.url }}/html-pages/index.html)
+            - [page1.html](${{ steps.artifact_urls.outputs.url }}/html-pages/page1.html)
+            - [page2.html](${{ steps.artifact_urls.outputs.url }}/html-pages/page2.html)
+            
+            Please note that you need to be logged in to view these artifacts.`
+          })

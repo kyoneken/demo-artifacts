@@ -6,12 +6,17 @@ on:
   pull_request:
     branches: [ main ]
 
+# 権限を明示的に設定
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Create artifact
       run: |
@@ -19,7 +24,7 @@ jobs:
         cp -r sample/* artifact/
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: html-pages
         path: artifact
@@ -31,7 +36,7 @@ jobs:
 
     steps:
     - name: Download artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: html-pages
 
@@ -39,14 +44,14 @@ jobs:
       id: artifact_urls
       run: |
         ARTIFACT_URL=$(echo ${{ github.event.pull_request.html_url }} | sed 's/pull\//pull\/artifacts\//')
-        echo "::set-output name=url::$ARTIFACT_URL"
+        echo "url=$ARTIFACT_URL" >> $GITHUB_OUTPUT
 
     - name: Comment PR
-      uses: actions/github-script@v4
+      uses: actions/github-script@v7
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
-          github.issues.createComment({
+          github.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
@@ -55,6 +60,7 @@ jobs:
             - [index.html](${{ steps.artifact_urls.outputs.url }}/html-pages/index.html)
             - [page1.html](${{ steps.artifact_urls.outputs.url }}/html-pages/page1.html)
             - [page2.html](${{ steps.artifact_urls.outputs.url }}/html-pages/page2.html)
+            - [page3.html](${{ steps.artifact_urls.outputs.url }}/html-pages/page3.html)
             
             Please note that you need to be logged in to view these artifacts.`
           })

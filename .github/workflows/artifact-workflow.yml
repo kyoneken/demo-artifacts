@@ -46,7 +46,7 @@ jobs:
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
-          github.issues.createComment({
+          github.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
@@ -55,6 +55,7 @@ jobs:
             - [index.html](${{ steps.artifact_urls.outputs.url }}/html-pages/index.html)
             - [page1.html](${{ steps.artifact_urls.outputs.url }}/html-pages/page1.html)
             - [page2.html](${{ steps.artifact_urls.outputs.url }}/html-pages/page2.html)
+            - [page3.html](${{ steps.artifact_urls.outputs.url }}/html-pages/page3.html)
             
             Please note that you need to be logged in to view these artifacts.`
           })

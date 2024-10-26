@@ -14,7 +14,7 @@ jobs:
       image: ghcr.io/kyoneken/infra-md2pdf:latest
       credentials:
         username: ${{ github.actor }}
-        password: ${{ secrets.GHCR_PAT }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout repository
@@ -39,8 +39,7 @@ jobs:
       # HTMLファイルをPDFに変換
       - name: Convert HTML to PDF
         run: |
-          cd /app
-          node /convert_to_pdf.js /dest/pdf /dest/html/*.html
+          node /app/convert_to_pdf.js dest/pdf dest/html/*.html
 
       # PDFをアーティファクトとしてアップロード
       - name: Upload PDF files

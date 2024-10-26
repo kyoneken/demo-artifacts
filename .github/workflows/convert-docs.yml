@@ -1,0 +1,59 @@
+name: Convert Documentation to PDF
+
+on:
+  push:
+    paths:
+      - 'sample/markdown/*.md'
+      - '.github/workflows/convert-docs.yml'
+  workflow_dispatch:
+
+jobs:
+  convert-docs:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/kyoneken/infra-md2pdf:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create output directories
+        run: |
+          mkdir -p dest/html
+          mkdir -p dest/pdf
+
+      # Markdownファイルを HTMLに変換
+      - name: Convert Markdown to HTML
+        run: |
+          for md_file in sample/markdown/*.md; do
+            if [ -f "$md_file" ]; then
+              filename=$(basename "$md_file" .md)
+              echo "Converting $md_file to dest/html/$filename.html"
+              multimarkdown "$md_file" > "dest/html/$filename.html"
+            fi
+          done
+
+      # HTMLファイルをPDFに変換
+      - name: Convert HTML to PDF
+        run: |
+          npx playwright install chromium --with-deps
+          node /app/convert_to_pdf.js dest/pdf dest/html/*.html
+
+      # PDFをアーティファクトとしてアップロード
+      - name: Upload PDF files
+        uses: actions/upload-artifact@v3
+        with:
+          name: documentation-pdfs
+          path: dest/pdf/*.pdf
+          retention-days: 7
+
+      # HTMLもアーティファクトとしてアップロード（必要な場合）
+      - name: Upload HTML files
+        uses: actions/upload-artifact@v3
+        with:
+          name: documentation-html
+          path: dest/html/*.html
+          retention-days: 7

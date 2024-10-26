@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <!-- 背景 -->
+  <rect width="400" height="300" fill="#f0f0f0"/>
+  
+  <!-- 中央の人物（CEO） -->
+  <circle cx="200" cy="100" r="20" fill="#333"/>
+  <line x1="200" y1="120" x2="200" y2="200" stroke="#333" stroke-width="4"/>
+  <line x1="200" y1="140" x2="160" y2="180" stroke="#333" stroke-width="4"/>
+  <line x1="200" y1="140" x2="240" y2="180" stroke="#333" stroke-width="4"/>
+  <line x1="200" y1="200" x2="160" y2="260" stroke="#333" stroke-width="4"/>
+  <line x1="200" y1="200" x2="240" y2="260" stroke="#333" stroke-width="4"/>
+  
+  <!-- 左の人物（CTO） -->
+  <circle cx="120" cy="120" r="20" fill="#333"/>
+  <line x1="120" y1="140" x2="120" y2="220" stroke="#333" stroke-width="4"/>
+  <line x1="120" y1="160" x2="80" y2="200" stroke="#333" stroke-width="4"/>
+  <line x1="120" y1="160" x2="160" y2="200" stroke="#333" stroke-width="4"/>
+  <line x1="120" y1="220" x2="80" y2="280" stroke="#333" stroke-width="4"/>
+  <line x1="120" y1="220" x2="160" y2="280" stroke="#333" stroke-width="4"/>
+  
+  <!-- 右の人物（PM） -->
+  <circle cx="280" cy="120" r="20" fill="#333"/>
+  <line x1="280" y1="140" x2="280" y2="220" stroke="#333" stroke-width="4"/>
+  <line x1="280" y1="160" x2="240" y2="200" stroke="#333" stroke-width="4"/>
+  <line x1="280" y1="160" x2="320" y2="200" stroke="#333" stroke-width="4"/>
+  <line x1="280" y1="220" x2="240" y2="280" stroke="#333" stroke-width="4"/>
+  <line x1="280" y1="220" x2="320" y2="280" stroke="#333" stroke-width="4"/>
+</svg>

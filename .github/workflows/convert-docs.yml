@@ -1,7 +1,8 @@
 name: Convert Documentation to PDF
 
 on:
-  push:
+  pull_request:
+    types: [opened, synchronize, reopened]
     paths:
       - 'sample/markdown/*.md'
       - '.github/workflows/convert-docs.yml'

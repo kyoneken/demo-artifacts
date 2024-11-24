@@ -1,7 +1,8 @@
 name: Convert Documentation to PDF
 
 on:
-  push:
+  pull_request:
+    types: [opened, synchronize, reopened]
     paths:
       - 'sample/markdown/*.md'
       - '.github/workflows/convert-docs.yml'
@@ -39,7 +40,7 @@ jobs:
       # HTMLファイルをPDFに変換
       - name: Convert HTML to PDF
         run: |
-          npx playwright install chromium --with-deps
+          npx playwright install
           node /app/convert_to_pdf.js dest/pdf dest/html/*.html
 
       # PDFをアーティファクトとしてアップロード
@@ -48,12 +49,4 @@ jobs:
         with:
           name: documentation-pdfs
           path: dest/pdf/*.pdf
-          retention-days: 7
-
-      # HTMLもアーティファクトとしてアップロード（必要な場合）
-      - name: Upload HTML files
-        uses: actions/upload-artifact@v3
-        with:
-          name: documentation-html
-          path: dest/html/*.html
-          retention-days: 7
+          retention-days: 1

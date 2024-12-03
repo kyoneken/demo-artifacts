@@ -1,11 +1,11 @@
 name: Convert Documentation to PDF
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-    paths:
-      - 'sample/markdown/*.md'
-      - '.github/workflows/convert-docs.yml'
+  # pull_request:
+  #   types: [opened, synchronize, reopened]
+  #   paths:
+  #     - 'sample/markdown/*.md'
+  #     - '.github/workflows/convert-docs.yml'
   workflow_dispatch:
 
 jobs:
@@ -30,8 +30,8 @@ jobs:
       # 画像ファイルのコピー
       - name: Copy images
         run: |
-          if [ -d "images" ]; then
-            cp -r images/* dst/images/
+          if [ -d "sample/images" ]; then
+            cp -r sample/images/* dst/images/
           fi
       # Markdownファイルを HTMLに変換
       - name: Convert Markdown to HTML

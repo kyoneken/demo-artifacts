@@ -12,6 +12,6 @@
    - 国際的なプロジェクト経験
    - MBA取得
 
-![チーム写真](/sample/images/team-photo.svg)
+![チーム写真](../images/team-photo.svg)
 
 ---

@@ -1,16 +1,19 @@
 name: Convert Documentation to PDF
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-    paths:
-      - 'sample/markdown/*.md'
-      - '.github/workflows/convert-docs.yml'
+  # pull_request:
+  #   types: [opened, synchronize, reopened]
+  #   paths:
+  #     - 'sample/markdown/*.md'
+  #     - '.github/workflows/convert-docs.yml'
   workflow_dispatch:
 
 jobs:
   convert-docs:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
     container:
       image: ghcr.io/kyoneken/infra-md2pdf:latest
       credentials:
@@ -23,29 +26,48 @@ jobs:
 
       - name: Create output directories
         run: |
-          mkdir -p dest/html
-          mkdir -p dest/pdf
-
+          mkdir -p dst/html
+          mkdir -p dst/pdf
+          mkdir -p dst/images
+      
+      # 画像ファイルのコピー
+      - name: Copy images
+        run: |
+          if [ -d "sample/images" ]; then
+            cp -r sample/images/* dst/images/
+          fi
       # Markdownファイルを HTMLに変換
       - name: Convert Markdown to HTML
         run: |
           for md_file in sample/markdown/*.md; do
             if [ -f "$md_file" ]; then
               filename=$(basename "$md_file" .md)
-              echo "Converting $md_file to dest/html/$filename.html"
-              multimarkdown "$md_file" > "dest/html/$filename.html"
+              echo "Converting $md_file to dst/html/$filename.html"
+              multimarkdown "$md_file" > "dst/html/$filename.html"
             fi
           done
 
       # HTMLファイルをPDFに変換
       - name: Convert HTML to PDF
         run: |
-          node /app/convert_to_pdf.js dest/pdf dest/html/*.html
+          node /app/convert_to_pdf.js dst/pdf dst/html/*.html
 
       # PDFをアーティファクトとしてアップロード
       - name: Upload PDF files
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: documentation-pdfs
-          path: dest/pdf/*.pdf
+          path: dst/pdf/*.pdf
           retention-days: 1
+          compression-level: 6
+
+      # HTMLもアーティファクトとしてアップロード（必要な場合）
+      - name: Upload HTML files
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation-html
+          path: |
+            dst/html/*.html                
+            dst/images
+          retention-days: 1
+          compression-level: 6

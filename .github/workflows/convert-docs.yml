@@ -50,7 +50,6 @@ jobs:
       # HTMLファイルをPDFに変換
       - name: Convert HTML to PDF
         run: |
-          npx playwright install
           node /app/convert_to_pdf.js dst/pdf dst/html/*.html
 
       # PDFをアーティファクトとしてアップロード

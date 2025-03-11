@@ -15,7 +15,7 @@ jobs:
       contents: read
       packages: read
     container:
-      image: ghcr.io/kyoneken/infra-md2pdf:latest
+      image: ghcr.io/kyoneken/infra-md2pdf:v1.1.1-beta
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
